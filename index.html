@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tela de Login</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+        }
+
+        body {
+            background-image: url('./images/ft4.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+        }
+
+        .login-container {
+            margin: 15px;
+            background-color: white;
+            width: 400px;
+            padding: 30px 45px;
+            border-radius: 15px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            border: 2px solid red;
+
+        }
+
+        .login-container h1 {
+            font-size: 24px;
+            margin-bottom: 26px;
+            color: black;
+        }
+
+        .login-container label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: bold;
+            color: black;
+            text-align: left;
+        }
+
+        .login-container input[type="number"],
+        .login-container select {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 25px;
+            background-color: #f9f9f9;
+            font-size: 16px;
+            appearance: none;
+        }
+
+        .login-container select {
+            cursor: pointer;
+        }
+
+        .login-container button {
+            background-color: red;
+            color: white;
+            padding: 12px;
+            width: 100%;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .login-container button:hover {
+            background-color: darkred;
+        }
+
+        .login-container .avatar {
+            width: 80px;
+            height: 80px;
+            background-color: transparent;
+            border-radius: 50%;
+            margin: 0 auto 20px auto;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .avatar img {
+            width: 100%;
+            
+        }
+       
+    </style>
+    <script>
+        async function fetchFuncionarios() {
+            const apiUrl = "http://127.0.0.1:8000/funcionarios";
+            try {
+                const response = await fetch(apiUrl);
+                if (!response.ok) throw new Error(`Erro na API: ${response.statusText}`);
+                const funcionarios = await response.json();
+                populateFuncionarios(funcionarios);
+            } catch (error) {
+                console.error("Erro:", error.message);
+                alert("Erro ao carregar funcionários.");
+            }
+        }
+
+        function populateFuncionarios(funcionarios) {
+            const select = document.getElementById("funcionario-select");
+            select.innerHTML = '<option value="">Selecione um Funcionário</option>';
+            funcionarios.forEach((func) => {
+                const option = document.createElement("option");
+                option.value = func.id;
+                option.textContent = func.nome;
+                select.appendChild(option);
+            });
+        }
+
+        function redirecionar(event) {
+            event.preventDefault();
+            const funcionarioId = document.getElementById("funcionario-select").value;
+            if (!funcionarioId) {
+                alert("Por favor, selecione um funcionário.");
+                return;
+            }
+            window.location.replace("contagem.html");
+        }
+
+        window.onload = fetchFuncionarios;
+    </script>
+</head>
+<body>
+    <main class="login-container">
+        <div class="avatar">
+            <img src="./images/ft2.png" alt="Avatar">
+        </div>
+        <h1>Bem Vindo(a)!</h1>
+        <form onsubmit="redirecionar(event)">
+            <label for="funcionario-select">Funcionário:</label>
+            <select id="funcionario-select" name="funcionario" required></select>
+
+            <label for="senha">Senha:</label>
+            <input type="number" id="senha" name="senha" placeholder="Digite sua senha" required>
+
+            <button type="submit">Entrar</button>
+        </form>
+    </main>
+</body>
+</html>
